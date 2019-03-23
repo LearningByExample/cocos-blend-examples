@@ -28,14 +28,7 @@ Scene* MainScene::createScene()
 	return MainScene::create();
 }
 
-// Print useful error message instead of segfaulting when files are not there.
-static void problemLoading(const char* filename)
-{
-	printf("Error while loading: %s\n", filename);
-	printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
-}
 
-// on "init" you need to initialize your instance
 bool MainScene::init()
 {
 	//////////////////////////////
@@ -54,6 +47,38 @@ bool MainScene::init()
 	opacityDown = false;
 	currentBall = 1;
 
+	if (!createBackGround())
+	{
+		return false;
+	}
+
+	if (!createBall(currentBall))
+	{
+		return false;
+	}
+
+	if (!createLabel())
+	{
+		return false;
+	}
+
+	if (!createKeybordListener())
+	{
+		return false;
+	}
+
+	scheduleUpdate();
+
+	return true;
+}
+
+void MainScene::problemLoading(const char* filename)
+{
+	log("Error while loading: %s\n", filename);
+}
+
+boolean MainScene::createBackGround()
+{
 	auto screenWidth = Director::getInstance()->getVisibleSize().width;
 	auto screenHeight = Director::getInstance()->getVisibleSize().height;
 
@@ -65,34 +90,19 @@ bool MainScene::init()
 	}
 
 	bg->setPosition(screenWidth / 2.0f, screenHeight / 2.0f);
-	this->addChild(bg);
-
-	this->createBall(currentBall);
-
-	label = Label::createWithSystemFont("My Label Text", "Arial", 20);
-	this->addChild(label, 255);
-	label->setPosition(0 + label->getContentSize().width / 2, label->getContentSize().height / 2);
-
-	this->scheduleUpdate();
-
-	auto listener = EventListenerKeyboard::create();
-	listener->onKeyPressed = CC_CALLBACK_2(MainScene::onKeyPressed, this);
-	listener->onKeyReleased = CC_CALLBACK_2(MainScene::onKeyReleased, this);
-
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-
+	addChild(bg);
 
 	return true;
 }
 
-void MainScene::createBall(int num)
+boolean MainScene::createBall(int num)
 {
 	Vec2 pos;
 
 	if (ball != nullptr)
 	{
 		pos = ball->getPosition();
-		this->removeChild(ball);
+		removeChild(ball);
 	}
 	else
 	{
@@ -108,22 +118,62 @@ void MainScene::createBall(int num)
 	if (ball == nullptr)
 	{
 		problemLoading(filename.c_str());
-		return;
+		return false;
 	}
 
 	ball->setPosition(pos);
 	ball->setBlendFunc(BlendFunc::ALPHA_PREMULTIPLIED);
 	ball->setOpacityModifyRGB(false);
 	ball->setColor(Color3B::WHITE);
-	this->addChild(ball, 250);
+	addChild(ball, 250);
 	currentBall = num;
+
+	return true;
 }
 
-void MainScene::createEmitter(boolean isFireWorks)
+boolean MainScene::createLabel()
+{
+	label = Label::createWithSystemFont("My Label Text", "Arial", 20);
+
+	if (label == nullptr)
+	{
+		log("Error creating label");
+		return false;
+	}
+
+	addChild(label, 255);
+	label->setPosition(0 + label->getContentSize().width / 2, label->getContentSize().height / 2);
+
+	return true;
+}
+
+boolean MainScene::createKeybordListener()
+{
+	auto listener = EventListenerKeyboard::create();
+	if (listener == nullptr)
+	{
+		log("Error creating keyboard listener");
+		return false;
+	}
+
+	listener->onKeyPressed = CC_CALLBACK_2(MainScene::onKeyPressed, this);
+	listener->onKeyReleased = CC_CALLBACK_2(MainScene::onKeyReleased, this);
+
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+
+	return true;
+}
+
+boolean MainScene::createEmitter(boolean isFireWorks)
 {
 	if (ball != nullptr)
 	{
 		auto emitter = isFireWorks ? (ParticleSystemQuad*)ParticleFireworks::create() : ParticleFire::create();
+		if (emitter == nullptr)
+		{
+			log("Error creating emitter");
+			return false;
+		}
 		emitter->setDuration(1);
 		emitter->setOpacity(ball->getOpacity());
 		emitter->setBlendFunc(ball->getBlendFunc());
@@ -133,7 +183,10 @@ void MainScene::createEmitter(boolean isFireWorks)
 		emitter->setDisplayFrame(ball->getSpriteFrame());
 
 		addChild(emitter);
+		return true;
 	}
+
+	return false;
 }
 
 void MainScene::update(float delta)
@@ -285,13 +338,13 @@ void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 		changeBlend();
 		break;
 	case EventKeyboard::KeyCode::KEY_1:
-		this->createBall(1);
+		createBall(1);
 		break;
 	case EventKeyboard::KeyCode::KEY_2:
-		this->createBall(2);
+		createBall(2);
 		break;
 	case EventKeyboard::KeyCode::KEY_3:
-		this->createBall(3);
+		createBall(3);
 		break;
 	case EventKeyboard::KeyCode::KEY_0:
 		changeColor();

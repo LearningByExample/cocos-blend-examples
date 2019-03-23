@@ -53,8 +53,12 @@ private:
 	void updateOpacity(float delta);
 	void updateLabel();
 
-	void createBall(int num);
-	void createEmitter(boolean isFireWorks);
+	void problemLoading(const char* filename);
+	boolean createBackGround();
+	boolean createBall(int num);
+	boolean createLabel();
+	boolean createKeybordListener();
+	boolean createEmitter(boolean isFireWorks);
 
 	void changeBlend();
 	void changeColor();
