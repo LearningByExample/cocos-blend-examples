@@ -77,7 +77,7 @@ void MainScene::problemLoading(const char* filename)
 	log("Error while loading: %s\n", filename);
 }
 
-boolean MainScene::createBackGround()
+bool MainScene::createBackGround()
 {
 	auto screenWidth = Director::getInstance()->getVisibleSize().width;
 	auto screenHeight = Director::getInstance()->getVisibleSize().height;
@@ -95,7 +95,7 @@ boolean MainScene::createBackGround()
 	return true;
 }
 
-boolean MainScene::createBall(int num)
+bool MainScene::createBall(int num)
 {
 	Vec2 pos;
 
@@ -131,7 +131,7 @@ boolean MainScene::createBall(int num)
 	return true;
 }
 
-boolean MainScene::createLabel()
+bool MainScene::createLabel()
 {
 	label = Label::createWithSystemFont("My Label Text", "Arial", 20);
 
@@ -147,7 +147,7 @@ boolean MainScene::createLabel()
 	return true;
 }
 
-boolean MainScene::createKeybordListener()
+bool MainScene::createKeybordListener()
 {
 	auto listener = EventListenerKeyboard::create();
 	if (listener == nullptr)
@@ -164,7 +164,7 @@ boolean MainScene::createKeybordListener()
 	return true;
 }
 
-boolean MainScene::createEmitter(boolean isFireWorks)
+bool MainScene::createEmitter(bool isFireWorks)
 {
 	if (ball != nullptr)
 	{
@@ -412,12 +412,12 @@ void MainScene::changeColor()
 	}
 }
 
-boolean MainScene::blendEqual(BlendFunc blend1, BlendFunc blend2)
+bool MainScene::blendEqual(BlendFunc blend1, BlendFunc blend2)
 {
 	return (blend1.src == blend2.src) && (blend1.dst == blend2.dst);
 }
 
-boolean MainScene::colorEqual(cocos2d::Color3B color1, cocos2d::Color3B color2)
+bool MainScene::colorEqual(cocos2d::Color3B color1, cocos2d::Color3B color2)
 {
 	return (color1.r == color2.r) && (color1.g == color2.g) && (color1.b == color2.b);
 }

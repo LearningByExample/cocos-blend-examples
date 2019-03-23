@@ -54,17 +54,17 @@ private:
 	void updateLabel();
 
 	void problemLoading(const char* filename);
-	boolean createBackGround();
-	boolean createBall(int num);
-	boolean createLabel();
-	boolean createKeybordListener();
-	boolean createEmitter(boolean isFireWorks);
+	bool createBackGround();
+	bool createBall(int num);
+	bool createLabel();
+	bool createKeybordListener();
+	bool createEmitter(bool isFireWorks);
 
 	void changeBlend();
 	void changeColor();
 
-	boolean blendEqual(cocos2d::BlendFunc blend1, cocos2d::BlendFunc blend2);
-	boolean colorEqual(cocos2d::Color3B color1, cocos2d::Color3B color2);
+	bool blendEqual(cocos2d::BlendFunc blend1, cocos2d::BlendFunc blend2);
+	bool colorEqual(cocos2d::Color3B color1, cocos2d::Color3B color2);
 
 };
 
