@@ -69,19 +69,18 @@ bool MainScene::init()
 
 	this->createBall(currentBall);
 
+	label = Label::createWithSystemFont("My Label Text", "Arial", 20);
+	this->addChild(label, 255);
+	label->setPosition(0 + label->getContentSize().width / 2, label->getContentSize().height / 2);
+
 	this->scheduleUpdate();
 
-	// creating a keyboard event listener
 	auto listener = EventListenerKeyboard::create();
 	listener->onKeyPressed = CC_CALLBACK_2(MainScene::onKeyPressed, this);
 	listener->onKeyReleased = CC_CALLBACK_2(MainScene::onKeyReleased, this);
 
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-
-	label = Label::createWithSystemFont("My Label Text", "Arial", 20);
-	this->addChild(label);
-	label->setPosition(0 + label->getContentSize().width / 2, label->getContentSize().height / 2);
 
 	return true;
 }
@@ -104,21 +103,47 @@ void MainScene::createBall(int num)
 
 	std::ostringstream stringStream;
 	stringStream << "ball0" << num << ".png";
-	ball = Sprite::create(stringStream.str());
+	auto filename = stringStream.str();
+	ball = Sprite::create(filename);
 	if (ball == nullptr)
 	{
-		problemLoading("ball.png");
+		problemLoading(filename.c_str());
 		return;
 	}
 
 	ball->setPosition(pos);
 	ball->setBlendFunc(BlendFunc::ALPHA_PREMULTIPLIED);
-    ball->setOpacityModifyRGB(false);
-    ball->setColor(Color3B::WHITE);
-	this->addChild(ball);
+	ball->setOpacityModifyRGB(false);
+	ball->setColor(Color3B::WHITE);
+	this->addChild(ball, 250);
 	currentBall = num;
 }
+
+void MainScene::createEmitter(boolean isFireWorks)
+{
+	if (ball != nullptr)
+	{
+		auto emitter = isFireWorks ? (ParticleSystemQuad*)ParticleFireworks::create() : ParticleFire::create();
+		emitter->setDuration(1);
+		emitter->setOpacity(ball->getOpacity());
+		emitter->setBlendFunc(ball->getBlendFunc());
+		emitter->setPosition(ball->getPosition());
+		emitter->setColor(ball->getColor());
+		emitter->setOpacityModifyRGB(false);
+		emitter->setDisplayFrame(ball->getSpriteFrame());
+
+		addChild(emitter);
+	}
+}
+
 void MainScene::update(float delta)
+{
+	updatePos(delta);
+	updateOpacity(delta);
+	updateLabel();
+}
+
+void MainScene::updatePos(float delta)
 {
 	if (ball == nullptr)
 	{
@@ -138,6 +163,14 @@ void MainScene::update(float delta)
 	{
 		ball->setPosition(pos);
 	}
+}
+
+void MainScene::updateOpacity(float delta)
+{
+	if (ball == nullptr)
+	{
+		return;
+	}
 
 	GLubyte savedOpacity = ball->getOpacity();
 	float opacity = (float)savedOpacity;
@@ -153,9 +186,18 @@ void MainScene::update(float delta)
 	}
 	if (savedOpacity != (GLubyte)opacity)
 	{
-		ball->setOpacity((GLubyte)opacity);		
+		ball->setOpacity((GLubyte)opacity);
+	}
+}
+
+void MainScene::updateLabel()
+{
+	if (ball == nullptr)
+	{
+		return;
 	}
 
+	auto opacity = ball->getOpacity();
 	auto lastString = label->getString();
 	std::ostringstream stringStream;
 	stringStream << "Ball: " << currentBall;
@@ -164,20 +206,19 @@ void MainScene::update(float delta)
 
 	stringStream << " Blend: ";
 	auto blend = ball->getBlendFunc();
-
-	if ((blend.dst == BlendFunc::ALPHA_NON_PREMULTIPLIED.dst) && (blend.src == BlendFunc::ALPHA_NON_PREMULTIPLIED.src))
+	if (blendEqual(blend, BlendFunc::ALPHA_NON_PREMULTIPLIED))
 	{
 		stringStream << "ALPHA_NON_PREMULTIPLIED (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)";
 	}
-	else if ((blend.dst == BlendFunc::ALPHA_PREMULTIPLIED.dst) && (blend.src == BlendFunc::ALPHA_PREMULTIPLIED.src))
+	else if (blendEqual(blend, BlendFunc::ALPHA_PREMULTIPLIED))
 	{
 		stringStream << "ALPHA_PREMULTIPLIED (GL_ONE, GL_ONE_MINUS_SRC_ALPHA)";
 	}
-	else if ((blend.dst == BlendFunc::ADDITIVE.dst) && (blend.src == BlendFunc::ADDITIVE.src))
+	else if (blendEqual(blend, BlendFunc::ADDITIVE))
 	{
 		stringStream << "ADDITIVE (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)";
 	}
-	else if ((blend.dst == BlendFunc::DISABLE.dst) && (blend.src == BlendFunc::DISABLE.src))
+	else if (blendEqual(blend, BlendFunc::DISABLE))
 	{
 		stringStream << "DISABLE (GL_ONE, GL_ZERO)";
 	}
@@ -189,10 +230,8 @@ void MainScene::update(float delta)
 		label->setPosition(0 + label->getContentSize().width / 2, label->getContentSize().height / 2);
 		lastString = newString;
 	}
-
 }
 
-// Implementation of the keyboard event callback function prototype
 void MainScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
 	switch (keyCode)
@@ -243,29 +282,7 @@ void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 		opacityDown = false;
 		break;
 	case EventKeyboard::KeyCode::KEY_SPACE:
-		if (ball != nullptr)
-		{
-			auto blend = ball->getBlendFunc();
-
-			if ((blend.dst == BlendFunc::ALPHA_PREMULTIPLIED.dst) && (blend.src == BlendFunc::ALPHA_PREMULTIPLIED.src))
-			{
-				blend = BlendFunc::ALPHA_NON_PREMULTIPLIED;
-			}
-			else if ((blend.dst == BlendFunc::ALPHA_NON_PREMULTIPLIED.dst) && (blend.src == BlendFunc::ALPHA_NON_PREMULTIPLIED.src))
-			{
-				blend = BlendFunc::ADDITIVE;
-			}
-			else if ((blend.dst == BlendFunc::ADDITIVE.dst) && (blend.src == BlendFunc::ADDITIVE.src))
-			{
-				blend = BlendFunc::DISABLE;
-			}
-			else if ((blend.dst == BlendFunc::DISABLE.dst) && (blend.src == BlendFunc::DISABLE.src))
-			{
-				blend = BlendFunc::ALPHA_PREMULTIPLIED;
-			}
-
-			ball->setBlendFunc(blend);
-		}
+		changeBlend();
 		break;
 	case EventKeyboard::KeyCode::KEY_1:
 		this->createBall(1);
@@ -277,59 +294,77 @@ void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 		this->createBall(3);
 		break;
 	case EventKeyboard::KeyCode::KEY_0:
-            if(ball!=nullptr)
-            {
-                auto color = ball->getColor();
-                if( (color.r == Color3B::WHITE.r) && (color.g == Color3B::WHITE.g) && (color.b == Color3B::WHITE.b) )
-                {
-                    color = Color3B::RED;
-                }
-                else if( (color.r == Color3B::RED.r) && (color.g == Color3B::RED.g) && (color.b == Color3B::RED.b) )
-                {
-                    color = Color3B::GREEN;
-                }
-                else if( (color.r == Color3B::GREEN.r) && (color.g == Color3B::GREEN.g) && (color.b == Color3B::GREEN.b) )
-                {
-                    color = Color3B::BLUE;
-                }
-                else if( (color.r == Color3B::BLUE.r) && (color.g == Color3B::BLUE.g) && (color.b == Color3B::BLUE.b) )
-                {
-                    color = Color3B::WHITE;
-                }
-                ball->setColor(color);
-            }
+		changeColor();
 		break;
 	case EventKeyboard::KeyCode::KEY_BACKSPACE:
-		if (ball != nullptr)
-		{
-			auto emitter = ParticleFire::create();
-			emitter->setDuration(1);
-			emitter->setOpacity(ball->getOpacity());
-			emitter->setBlendFunc(ball->getBlendFunc());
-            emitter->setPosition(ball->getPosition());
-			emitter->setColor(ball->getColor());
-            emitter->setOpacityModifyRGB(false);
-			emitter->setDisplayFrame(ball->getSpriteFrame());
-
-			addChild(emitter, 10);
-		}
+		createEmitter(false);
 		break;
 	case EventKeyboard::KeyCode::KEY_ENTER:
-		if (ball != nullptr)
-		{
-			auto emitter = ParticleFireworks::create();
-			emitter->setDuration(1);
-			emitter->setOpacity(ball->getOpacity());
-			emitter->setBlendFunc(ball->getBlendFunc());
-			emitter->setPosition(ball->getPosition());
-            emitter->setColor(ball->getColor());
-            emitter->setOpacityModifyRGB(false);
-			emitter->setDisplayFrame(ball->getSpriteFrame());
-
-			addChild(emitter, 10);
-		}
+		createEmitter(true);
 		break;
 	default:
 		break;
 	}
+}
+
+void MainScene::changeBlend()
+{
+	if (ball != nullptr)
+	{
+		auto blend = ball->getBlendFunc();
+
+		if (blendEqual(blend, BlendFunc::ALPHA_PREMULTIPLIED))
+		{
+			blend = BlendFunc::ALPHA_NON_PREMULTIPLIED;
+		}
+		else if (blendEqual(blend, BlendFunc::ALPHA_NON_PREMULTIPLIED))
+		{
+			blend = BlendFunc::ADDITIVE;
+		}
+		else if (blendEqual(blend, BlendFunc::ADDITIVE))
+		{
+			blend = BlendFunc::DISABLE;
+		}
+		else if (blendEqual(blend, BlendFunc::DISABLE))
+		{
+			blend = BlendFunc::ALPHA_PREMULTIPLIED;
+		}
+
+		ball->setBlendFunc(blend);
+	}
+}
+
+void MainScene::changeColor()
+{
+	if (ball != nullptr)
+	{
+		auto color = ball->getColor();
+		if (colorEqual(color, Color3B::WHITE))
+		{
+			color = Color3B::RED;
+		}
+		else if (colorEqual(color, Color3B::RED))
+		{
+			color = Color3B::GREEN;
+		}
+		else if (colorEqual(color, Color3B::GREEN))
+		{
+			color = Color3B::BLUE;
+		}
+		else if (colorEqual(color, Color3B::BLUE))
+		{
+			color = Color3B::WHITE;
+		}
+		ball->setColor(color);
+	}
+}
+
+boolean MainScene::blendEqual(BlendFunc blend1, BlendFunc blend2)
+{
+	return (blend1.src == blend2.src) && (blend1.dst == blend2.dst);
+}
+
+boolean MainScene::colorEqual(cocos2d::Color3B color1, cocos2d::Color3B color2)
+{
+	return (color1.r == color2.r) && (color1.g == color2.g) && (color1.b == color2.b);
 }

@@ -33,13 +33,10 @@ public:
 	// implement the "static create()" method manually
 	CREATE_FUNC(MainScene);
 
-	virtual void update(float delta);
-	void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
-	void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);	
 private:
 	cocos2d::Sprite *ball;
 	cocos2d::Label *label;
-	
+
 	bool moveLeft;
 	bool moveRight;
 	bool moveUp;
@@ -48,7 +45,23 @@ private:
 	bool opacityDown;
 	unsigned short int currentBall;
 
+	virtual void update(float delta);
+	void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+	void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+
+	void updatePos(float delta);
+	void updateOpacity(float delta);
+	void updateLabel();
+
 	void createBall(int num);
+	void createEmitter(boolean isFireWorks);
+
+	void changeBlend();
+	void changeColor();
+
+	boolean blendEqual(cocos2d::BlendFunc blend1, cocos2d::BlendFunc blend2);
+	boolean colorEqual(cocos2d::Color3B color1, cocos2d::Color3B color2);
+
 };
 
 #endif // __HELLOWORLD_SCENE_H__
