@@ -113,6 +113,8 @@ void MainScene::createBall(int num)
 
 	ball->setPosition(pos);
 	ball->setBlendFunc(BlendFunc::ALPHA_PREMULTIPLIED);
+    ball->setOpacityModifyRGB(false);
+    ball->setColor(Color3B::WHITE);
 	this->addChild(ball);
 	currentBall = num;
 }
@@ -274,8 +276,28 @@ void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 	case EventKeyboard::KeyCode::KEY_3:
 		this->createBall(3);
 		break;
-	case EventKeyboard::KeyCode::KEY_4:
-		this->createBall(4);
+	case EventKeyboard::KeyCode::KEY_0:
+            if(ball!=nullptr)
+            {
+                auto color = ball->getColor();
+                if( (color.r == Color3B::WHITE.r) && (color.g == Color3B::WHITE.g) && (color.b == Color3B::WHITE.b) )
+                {
+                    color = Color3B::RED;
+                }
+                else if( (color.r == Color3B::RED.r) && (color.g == Color3B::RED.g) && (color.b == Color3B::RED.b) )
+                {
+                    color = Color3B::GREEN;
+                }
+                else if( (color.r == Color3B::GREEN.r) && (color.g == Color3B::GREEN.g) && (color.b == Color3B::GREEN.b) )
+                {
+                    color = Color3B::BLUE;
+                }
+                else if( (color.r == Color3B::BLUE.r) && (color.g == Color3B::BLUE.g) && (color.b == Color3B::BLUE.b) )
+                {
+                    color = Color3B::WHITE;
+                }
+                ball->setColor(color);
+            }
 		break;
 	case EventKeyboard::KeyCode::KEY_BACKSPACE:
 		if (ball != nullptr)
@@ -284,7 +306,9 @@ void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 			emitter->setDuration(1);
 			emitter->setOpacity(ball->getOpacity());
 			emitter->setBlendFunc(ball->getBlendFunc());
-			emitter->setPosition(ball->getPosition());
+            emitter->setPosition(ball->getPosition());
+			emitter->setColor(ball->getColor());
+            emitter->setOpacityModifyRGB(false);
 			emitter->setDisplayFrame(ball->getSpriteFrame());
 
 			addChild(emitter, 10);
@@ -298,6 +322,8 @@ void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 			emitter->setOpacity(ball->getOpacity());
 			emitter->setBlendFunc(ball->getBlendFunc());
 			emitter->setPosition(ball->getPosition());
+            emitter->setColor(ball->getColor());
+            emitter->setOpacityModifyRGB(false);
 			emitter->setDisplayFrame(ball->getSpriteFrame());
 
 			addChild(emitter, 10);

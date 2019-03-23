@@ -43,6 +43,7 @@ Use the following keys to test the example
 - Shift : Increase opactiy
 - Ctrl : Decrase opacity
 - Space : Change blend mode
-- 1 to 4 : Change the ball image
+- 1 to 3 : Change the ball image
+- 0 : Change the ball color
 - Enter : Create a fireworks emitter
 - Delete : Create a fire emitter
