@@ -277,7 +277,7 @@ void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 	case EventKeyboard::KeyCode::KEY_4:
 		this->createBall(4);
 		break;
-	case EventKeyboard::KeyCode::KEY_DELETE:
+	case EventKeyboard::KeyCode::KEY_BACKSPACE:
 		if (ball != nullptr)
 		{
 			auto emitter = ParticleFire::create();
