@@ -123,7 +123,7 @@ bool MainScene::createBall(int num)
 
 	ball->setPosition(pos);
 	ball->setBlendFunc(BlendFunc::ALPHA_PREMULTIPLIED);
-	ball->setOpacityModifyRGB(false);
+	ball->setOpacityModifyRGB(true);
 	ball->setColor(Color3B::WHITE);
 	addChild(ball, 250);
 	currentBall = num;
@@ -179,7 +179,7 @@ bool MainScene::createEmitter(bool isFireWorks)
 		emitter->setBlendFunc(ball->getBlendFunc());
 		emitter->setPosition(ball->getPosition());
 		emitter->setColor(ball->getColor());
-		emitter->setOpacityModifyRGB(false);
+		emitter->setOpacityModifyRGB(ball->isOpacityModifyRGB());
 		emitter->setDisplayFrame(ball->getSpriteFrame());
 
 		addChild(emitter);
@@ -391,6 +391,7 @@ void MainScene::changeColor()
 {
 	if (ball != nullptr)
 	{
+		bool opacityModifyRGB = false;
 		auto color = ball->getColor();
 		if (colorEqual(color, Color3B::WHITE))
 		{
@@ -407,8 +408,10 @@ void MainScene::changeColor()
 		else if (colorEqual(color, Color3B::BLUE))
 		{
 			color = Color3B::WHITE;
+			opacityModifyRGB = true;
 		}
 		ball->setColor(color);
+		ball->setOpacityModifyRGB(opacityModifyRGB);
 	}
 }
 
