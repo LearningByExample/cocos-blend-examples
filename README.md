@@ -39,7 +39,7 @@ Now you could open the project folder for the platform you like to use:
 
 Use the following keys to test the example
 
-- Cursors : Move the ball
+- Cursors / A W S D : Move the ball
 - Shift : Increase opactiy
 - Ctrl : Decrase opacity
 - Space : Change blend mode

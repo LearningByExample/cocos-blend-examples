@@ -181,6 +181,7 @@ bool MainScene::createEmitter(bool isFireWorks)
 		emitter->setColor(ball->getColor());
 		emitter->setOpacityModifyRGB(ball->isOpacityModifyRGB());
 		emitter->setDisplayFrame(ball->getSpriteFrame());
+		emitter->
 
 		addChild(emitter);
 		return true;
@@ -290,21 +291,27 @@ void MainScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	switch (keyCode)
 	{
 	case EventKeyboard::KeyCode::KEY_UP_ARROW:
+	case EventKeyboard::KeyCode::KEY_W:
 		moveUp = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+	case EventKeyboard::KeyCode::KEY_S:
 		moveDown = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+	case EventKeyboard::KeyCode::KEY_A:
 		moveLeft = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+	case EventKeyboard::KeyCode::KEY_D:
 		moveRight = true;
 		break;
-	case EventKeyboard::KeyCode::KEY_SHIFT:
+	case EventKeyboard::KeyCode::KEY_LEFT_SHIFT:
+	case EventKeyboard::KeyCode::KEY_RIGHT_SHIFT:
 		opacityUp = true;
 		break;
-	case EventKeyboard::KeyCode::KEY_CTRL:
+	case EventKeyboard::KeyCode::KEY_LEFT_CTRL:
+	case EventKeyboard::KeyCode::KEY_RIGHT_CTRL:
 		opacityDown = true;
 		break;
 	default:
@@ -317,21 +324,27 @@ void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 	switch (keyCode)
 	{
 	case EventKeyboard::KeyCode::KEY_UP_ARROW:
+	case EventKeyboard::KeyCode::KEY_W:
 		moveUp = false;
 		break;
 	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+	case EventKeyboard::KeyCode::KEY_S:
 		moveDown = false;
 		break;
 	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+	case EventKeyboard::KeyCode::KEY_A:
 		moveLeft = false;
 		break;
 	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+	case EventKeyboard::KeyCode::KEY_D:
 		moveRight = false;
 		break;
-	case EventKeyboard::KeyCode::KEY_SHIFT:
+	case EventKeyboard::KeyCode::KEY_LEFT_SHIFT:
+	case EventKeyboard::KeyCode::KEY_RIGHT_SHIFT:
 		opacityUp = false;
 		break;
-	case EventKeyboard::KeyCode::KEY_CTRL:
+	case EventKeyboard::KeyCode::KEY_LEFT_CTRL:
+	case EventKeyboard::KeyCode::KEY_RIGHT_CTRL:
 		opacityDown = false;
 		break;
 	case EventKeyboard::KeyCode::KEY_SPACE:
