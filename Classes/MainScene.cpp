@@ -181,9 +181,7 @@ bool MainScene::createEmitter(bool isFireWorks)
 		emitter->setColor(ball->getColor());
 		emitter->setOpacityModifyRGB(ball->isOpacityModifyRGB());
 		emitter->setDisplayFrame(ball->getSpriteFrame());
-		emitter->
-
-		addChild(emitter);
+        addChild(emitter);
 		return true;
 	}
 
