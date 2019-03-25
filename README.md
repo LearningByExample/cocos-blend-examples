@@ -3,6 +3,8 @@ A project for learning how blend modes works in cocos2d-x
 
 [![License: Apache2](https://img.shields.io/badge/license-Apache%202-blue.svg)](/LICENSE)
 
+[![Youtube Example](https://img.youtube.com/vi/q9uSgISUODM/0.jpg)](https://www.youtube.com/watch?v=q9uSgISUODM "Youtube Example")
+
 ## info
 
 This project has been created for teaching some friends about how blend modes works in cocos2d-x
